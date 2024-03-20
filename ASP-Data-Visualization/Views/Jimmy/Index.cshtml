@@ -1,14 +1,12 @@
-﻿@model List<JimmyModel>
+﻿@using System.Text.Json
+@model List<JimmyModel>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 
 @{
-  var prodDates = Model.Select(j => j.BirthDate.ToShortDateString()).ToArray();
-  var brainCells = Model.Select(j => j.BrainCells).ToArray();
-  var dateStrings = Html.Raw(string.Join(",", prodDates.Select(d => $"'{d}'")));
-  var brainCellStrings = string.Join(",", brainCells);
+  var jsonModel = Html.Raw(JsonSerializer.Serialize(Model));
 }
 
-<h1>Jimmy</h1>
+<h1>Jimmies</h1>
 
 <canvas id="myChart"></canvas>
 
@@ -38,10 +36,10 @@
   new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: [@dateStrings],
+      labels: @(jsonModel).map(j => j.BirthDate.split('T')[0]),
       datasets: [{
         label: 'Brain Cells',
-        data: [@brainCellStrings],
+        data: @(jsonModel).map(j => j.BrainCells),
         borderWidth: 1
       }]
     },
