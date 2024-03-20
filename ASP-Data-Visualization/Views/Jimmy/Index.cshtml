@@ -1,0 +1,56 @@
+﻿@model List<JimmyModel>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+
+@{
+  var prodDates = Model.Select(j => j.BirthDate.ToShortDateString()).ToArray();
+  var brainCells = Model.Select(j => j.BrainCells).ToArray();
+  var dateStrings = Html.Raw(string.Join(",", prodDates.Select(d => $"'{d}'")));
+  var brainCellStrings = string.Join(",", brainCells);
+}
+
+<h1>Jimmy</h1>
+
+<canvas id="myChart"></canvas>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Birth Date</th>
+        <th>Brain Cells</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Id</td>
+            <td>@item.BirthDate.ToShortDateString()</td>
+            <td>@item.BrainCells</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<script>
+  const ctx = document.getElementById('myChart');
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: [@dateStrings],
+      datasets: [{
+        label: 'Brain Cells',
+        data: [@brainCellStrings],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+</script>
